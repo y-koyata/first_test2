@@ -1,6 +1,7 @@
 # Laravel 基本ページ作成とApache設定手順
 
 このドキュメントでは、PHPフレームワーク「Laravel」を使用して基本的なページを作成し、Apache Webサーバーで表示させるための手順を説明します。
+**注意:** このリポジトリのルートディレクトリ自体がLaravelアプリケーションのルートディレクトリとなります。
 
 ## 前提条件
 
@@ -8,15 +9,23 @@
 - Composer がインストールされていること
 - Apache Webサーバー がインストールされていること
 
-## 1. Laravelプロジェクトの作成
+## 1. プロジェクトのセットアップ
 
-ターミナル（コマンドプロンプト）を開き、Web公開ディレクトリ（例: `/var/www/html` や `C:\xampp\htdocs`）に移動して、以下のコマンドを実行します。
+Gitからクローンした後、以下の手順でセットアップを行います。
 
 ```bash
-composer create-project laravel/laravel my-laravel-app
-```
+# 依存関係のインストール
+composer install
 
-これで `my-laravel-app` というディレクトリが作成され、Laravelがインストールされます。
+# 環境設定ファイルの作成
+cp .env.example .env
+
+# アプリケーションキーの生成
+php artisan key:generate
+
+# データベースのマイグレーション（必要な場合）
+php artisan migrate
+```
 
 ## 2. 基本的なページの作成
 
@@ -55,21 +64,23 @@ Route::get('/hello', function () {
 
 ## 3. Apacheの設定
 
-ApacheでLaravelアプリケーションを表示させるためには、ドキュメントルートをプロジェクト内の `public` ディレクトリに向ける必要があります。
+### 3.1 .htaccessによる設定（推奨）
 
-### 3.1 VirtualHostの設定
+このプロジェクトには、ルートディレクトリに `.htaccess` ファイルが含まれており、すべてのリクエストを `public` ディレクトリに転送するように設定されています。
+また、機密ファイルへのアクセスを制限する設定も含まれています。
 
-Apacheの設定ファイル（`httpd-vhosts.conf` や `sites-available/000-default.conf` など、環境によります）に以下のようなVirtualHost設定を追加します。
+### 3.2 VirtualHostの設定（ドキュメントルートを変更できる場合）
+
+もしApacheの設定でドキュメントルートを変更できる場合は、ドキュメントルートを `public` ディレクトリに設定することが最も推奨されます。
 
 ```apache
 <VirtualHost *:80>
-    # サーバー名は任意です。ローカル開発ではlocalhostや任意のドメインを設定します
     ServerName my-laravel-app.local
 
-    # 重要な点: DocumentRootはプロジェクトのルートではなく、publicディレクトリを指定します
-    DocumentRoot "/path/to/my-laravel-app/public"
+    # ドキュメントルートをpublicディレクトリに指定
+    DocumentRoot "/path/to/project/public"
 
-    <Directory "/path/to/my-laravel-app/public">
+    <Directory "/path/to/project/public">
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
@@ -80,11 +91,11 @@ Apacheの設定ファイル（`httpd-vhosts.conf` や `sites-available/000-defau
 </VirtualHost>
 ```
 
-※ `/path/to/my-laravel-app` の部分は、実際にプロジェクトを作成したパスに置き換えてください。
+ドキュメントルートを変更できない（リポジトリのルートが公開される）場合でも、ルートディレクトリにある `.htaccess` がリクエストを適切に処理します。
 
-### 3.2 mod_rewrite の有効化
+### 3.3 mod_rewrite の有効化
 
-Laravelのルーティング機能（きれいなURL）を利用するために、Apacheの `mod_rewrite` モジュールが必要です。
+Laravelのルーティング機能を利用するために、Apacheの `mod_rewrite` モジュールが必要です。
 
 Linux環境（Ubuntu等）の場合:
 ```bash
@@ -92,13 +103,12 @@ sudo a2enmod rewrite
 sudo systemctl restart apache2
 ```
 
-### 3.3 権限の設定
+### 3.4 権限の設定
 
 Laravelがログやキャッシュを書き込むために、`storage` ディレクトリと `bootstrap/cache` ディレクトリにはWebサーバーからの書き込み権限が必要です。
 
 Linux/Mac環境の場合:
 ```bash
-cd my-laravel-app
 chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 # Webサーバーのユーザーグループ（www-data等）に所有権を変更する必要がある場合もあります
@@ -108,5 +118,11 @@ chmod -R 775 bootstrap/cache
 
 ## 4. 確認
 
-ブラウザを開き、設定したURL（例: `http://localhost/hello` や `http://my-laravel-app.local/hello`）にアクセスしてください。
+開発用サーバーを起動して確認する場合：
+
+```bash
+php artisan serve
+```
+
+ブラウザで `http://localhost:8000/hello` にアクセスしてください。
 「Hello World!」というページが表示されれば成功です。
