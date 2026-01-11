@@ -160,3 +160,14 @@ Web公開領域（public_html）にはプログラム本体を置かず、非公
 4. **フロント実装**: フォーム作成、メール送信、署名付きURLの実装。
 5. **例外処理実装**: エラー画面、物理削除ロジックの実装。
 6. **テスト**: reCAPTCHA、メール到達、SSL確認。
+
+## 8. 作業履歴
+- **2026/01/11**: 環境構築およびデータベース実装
+  - `.env` ファイルの設定 (SQLite使用)
+  - `reservations` テーブルの作成 (カラム定義、ユニーク制約)
+  - `cancellation_logs` テーブルの作成
+  - Eloquentモデル `Reservation`, `CancellationLog` の作成
+- **2026/01/11**: 管理画面 (Filament) 実装
+  - Filament v3 のインストール
+  - 管理者ユーザーの作成
+  - `ReservationResource` の作成およびフォーム・テーブル定義の実装
