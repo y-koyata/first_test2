@@ -40,14 +40,15 @@
             border-bottom: 1px solid var(--border);
         }
 
+        /* Modified to 1 column */
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1.5rem;
         }
 
         .form-group { margin-bottom: 1.5rem; }
-        .full-width { grid-column: span 2; }
+        .full-width { grid-column: span 1; } /* Adjusted span for 1 col layout */
         
         label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
         .required::after { content: " *"; color: var(--error); }
@@ -70,6 +71,18 @@
             display: block; width: 100%; padding: 15px; background: var(--primary); color: #fff; font-size: 1.2rem; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;
         }
         .btn-submit:hover { background: var(--primary-dark); }
+
+        .total-display {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #15803d;
+            margin-top: 1.5rem;
+        }
 
         @media (max-width: 640px) {
             .form-grid { grid-template-columns: 1fr; }
@@ -101,7 +114,7 @@
                 </div>
             </div>
 
-            <!-- Section 2: Basic Info -->
+            <!-- Section 2: Basic Info (including Car Info) -->
             <div class="card">
                 <h2 class="section-header">2. 基本申し込み情報</h2>
                 
@@ -145,32 +158,40 @@
                         <input type="text" name="car_registration_no" required placeholder="例: 品川 500 あ 1234">
                     </div>
                 </div>
+            </div>
 
+            <!-- Section 3: Money & Participation -->
+            <div class="card">
+                <h2 class="section-header">3. お金に関する情報</h2>
                 <h3 style="margin-top:20px; border-bottom:1px solid #eee;">参加人数・オプション</h3>
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="required">同伴者（大人） ¥{{ number_format($campaign->companion_adult_fee) }}</label>
-                        <input type="number" name="companion_adult_count" value="0" min="0" required>
+                        <input type="number" name="companion_adult_count" id="companion_adult_count" value="0" min="0" required>
                     </div>
                     <div class="form-group">
                         <label class="required">同伴者（子供） ¥{{ number_format($campaign->companion_child_fee) }}</label>
-                        <input type="number" name="companion_child_count" value="0" min="0" required>
+                        <input type="number" name="companion_child_count" id="companion_child_count" value="0" min="0" required>
                     </div>
                     <div class="form-group">
                         <label class="required">追加駐車台数 ¥{{ number_format($campaign->additional_parking_fee) }}</label>
-                        <input type="number" name="additional_parking_count" value="0" min="0" required>
+                        <input type="number" name="additional_parking_count" id="additional_parking_count" value="0" min="0" required>
                     </div>
                     <div class="form-group">
                         <label class="required">振込予定日</label>
                         <input type="date" name="transfer_date" required>
                     </div>
                 </div>
+
+                <div class="total-display">
+                    合計金額: <span id="total-amount">¥{{ number_format($campaign->base_fee) }}</span>
+                </div>
             </div>
 
-            <!-- Section 3: Simple Survey -->
+            <!-- Section 4: Simple Survey (Renumbered) -->
             @if(!empty($campaign->survey_definition))
             <div class="card">
-                <h2 class="section-header">3. アンケート</h2>
+                <h2 class="section-header">4. アンケート</h2>
                 
                 @foreach($campaign->survey_definition as $index => $item)
                     @php
@@ -221,6 +242,36 @@
     </div>
 
     <script>
+        // Fees configuration
+        const fees = {
+            base: {{ $campaign->base_fee ?? 0 }},
+            adult: {{ $campaign->companion_adult_fee ?? 0 }},
+            child: {{ $campaign->companion_child_fee ?? 0 }},
+            parking: {{ $campaign->additional_parking_fee ?? 0 }}
+        };
+
+        function updateTotal() {
+            const adultCount = parseInt(document.getElementById('companion_adult_count').value) || 0;
+            const childCount = parseInt(document.getElementById('companion_child_count').value) || 0;
+            const parkingCount = parseInt(document.getElementById('additional_parking_count').value) || 0;
+
+            const total = fees.base +
+                          (adultCount * fees.adult) +
+                          (childCount * fees.child) +
+                          (parkingCount * fees.parking);
+
+            document.getElementById('total-amount').textContent = '¥' + total.toLocaleString();
+        }
+
+        // Add event listeners
+        document.getElementById('companion_adult_count').addEventListener('input', updateTotal);
+        document.getElementById('companion_child_count').addEventListener('input', updateTotal);
+        document.getElementById('additional_parking_count').addEventListener('input', updateTotal);
+
+        // Initial calculation
+        updateTotal();
+
+        // Validation script (kept from original)
         document.querySelector('form').addEventListener('submit', function(e) {
             const checkboxGroups = document.querySelectorAll('.checkbox-group[data-required="true"]');
 
