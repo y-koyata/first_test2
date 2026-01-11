@@ -4,10 +4,11 @@
     </IfModule>
 
     RewriteEngine On
+    RewriteBase /first_test2/
 
-    # Handle Front Controller...
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
+    # すべてのアクセスを public フォルダにリダイレクトする
+    RewriteCond %{REQUEST_URI} !^/first_test2/public/
+    RewriteRule ^(.*)$ public/$1 [R=301,L]
 </IfModule>
 
 # Security: Deny access to sensitive files and directories
