@@ -148,6 +148,11 @@ class CampaignResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_event')
+                    ->label('イベント画面へ')
+                    ->url(fn (Campaign $record): string => route('campaign.index', ['slug' => $record->slug]))
+                    ->openUrlInNewTab()
+                    ->icon('heroicon-m-arrow-top-right-on-square'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
