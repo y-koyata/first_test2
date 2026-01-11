@@ -173,15 +173,18 @@
                 <h2 class="section-header">3. アンケート</h2>
                 
                 @foreach($campaign->survey_definition as $index => $item)
+                    @php
+                        $isRequired = $item['is_required'] ?? true;
+                    @endphp
                     <div class="form-group">
-                        <label class="required">{{ $item['label'] }}</label>
+                        <label class="@if($isRequired) required @endif">{{ $item['label'] }}</label>
                         
                         @if($item['type'] === 'text')
-                            <input type="text" name="survey_data[{{ $item['label'] }}]" required>
+                            <input type="text" name="survey_data[{{ $item['label'] }}]" @if($isRequired) required @endif>
                         @elseif($item['type'] === 'textarea')
-                            <textarea name="survey_data[{{ $item['label'] }}]" rows="3" required></textarea>
+                            <textarea name="survey_data[{{ $item['label'] }}]" rows="3" @if($isRequired) required @endif></textarea>
                         @elseif($item['type'] === 'select')
-                            <select name="survey_data[{{ $item['label'] }}]" required>
+                            <select name="survey_data[{{ $item['label'] }}]" @if($isRequired) required @endif>
                                 <option value="">選択してください</option>
                                 @foreach($item['options'] ?? [] as $opt)
                                     <option value="{{ $opt }}">{{ $opt }}</option>
@@ -191,7 +194,15 @@
                             <div>
                                 @foreach($item['options'] ?? [] as $opt)
                                     <label style="display:inline-block; margin-right:15px; font-weight:normal;">
-                                        <input type="radio" name="survey_data[{{ $item['label'] }}]" value="{{ $opt }}" required> {{ $opt }}
+                                        <input type="radio" name="survey_data[{{ $item['label'] }}]" value="{{ $opt }}" @if($isRequired) required @endif> {{ $opt }}
+                                    </label>
+                                @endforeach
+                            </div>
+                        @elseif($item['type'] === 'checkbox')
+                            <div class="checkbox-group" @if($isRequired) data-required="true" @endif data-label="{{ $item['label'] }}">
+                                @foreach($item['options'] ?? [] as $opt)
+                                    <label style="display:inline-block; margin-right:15px; font-weight:normal;">
+                                        <input type="checkbox" name="survey_data[{{ $item['label'] }}][]" value="{{ $opt }}"> {{ $opt }}
                                     </label>
                                 @endforeach
                             </div>
@@ -208,5 +219,28 @@
             <button type="submit" class="btn-submit">上記の内容で登録を確定する</button>
         </form>
     </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const checkboxGroups = document.querySelectorAll('.checkbox-group[data-required="true"]');
+
+            for (const group of checkboxGroups) {
+                const checkboxes = group.querySelectorAll('input[type="checkbox"]');
+                let checkedOne = false;
+                for (const box of checkboxes) {
+                    if (box.checked) {
+                        checkedOne = true;
+                        break;
+                    }
+                }
+
+                if (!checkedOne) {
+                    e.preventDefault();
+                    alert(group.dataset.label + ' は必須項目です。少なくとも1つ選択してください。');
+                    return false;
+                }
+            }
+        });
+    </script>
 </body>
 </html>
