@@ -100,11 +100,15 @@ class CampaignResource extends Resource
                                         'radio' => 'ラジオボタン',
                                         'checkbox' => 'チェックボックス',
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->live(),
                                 Forms\Components\TagsInput::make('options')
                                     ->label('選択肢（Enterで追加）')
                                     ->placeholder('選択肢1, 選択肢2...')
                                     ->visible(fn (Forms\Get $get) => in_array($get('type'), ['select', 'radio', 'checkbox'])),
+                                Forms\Components\Toggle::make('is_required')
+                                    ->label('必須')
+                                    ->default(false),
                                 Forms\Components\Textarea::make('remarks')
                                     ->label('補足説明・備考'),
                             ])
