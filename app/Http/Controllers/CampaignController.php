@@ -30,15 +30,26 @@ class CampaignController extends Controller
 
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
 
-        // 3rd party observation protection: Always say "sent" even if not registered, 
-        // but logic is same: send verification link.
-        // We do separate strictly if we wanted to prevent re-registration but spec says "overwrite".
-        // So we just send the link.
+        // Check for OFFICIAL registration (registered_at NOT NULL)
+        $reservation = Reservation::where('campaign_id', $campaign->id)
+            ->where('email', $request->email)
+            ->whereNotNull('registered_at')
+            ->first();
+
+        // If no official registration, create a NEW provisional one
+        if (! $reservation) {
+            $reservation = Reservation::create([
+                'campaign_id' => $campaign->id,
+                'email' => $request->email,
+                'status' => 'provisional',
+                'registered_at' => null,
+            ]);
+        }
 
         $url = URL::temporarySignedRoute(
             'campaign.form',
             now()->addMinutes(30),
-            ['slug' => $slug, 'email' => $request->email]
+            ['slug' => $slug, 'reservation_id' => $reservation->id]
         );
 
         Mail::to($request->email)->send(new VerificationEmail($url, $campaign));
@@ -53,12 +64,16 @@ class CampaignController extends Controller
         }
 
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
-        $email = $request->query('email');
+
+        $reservationId = $request->query('reservation_id');
+        $reservation = Reservation::findOrFail($reservationId);
+        $email = $reservation->email;
 
         // Specification: "Do not pre-fill form even for existing users"
         // So we just pass the email (hidden) and campaign.
+        // We pass 'reservation' object but will only use ID and Email in view.
 
-        return view('campaign.form', compact('campaign', 'email'));
+        return view('campaign.form', compact('campaign', 'email', 'reservation'));
     }
 
     public function store(Request $request, $slug)
@@ -67,6 +82,7 @@ class CampaignController extends Controller
 
         // Validation based on spec
         $validated = $request->validate([
+            'reservation_id' => 'required|exists:reservations,id',
             'email' => 'required|email',
             'name' => 'required|string|max:255',
             'name_kana' => 'required|string|max:255',
@@ -84,37 +100,39 @@ class CampaignController extends Controller
             // 'g-recaptcha-response' => 'required|captcha',
         ]);
         
+        $reservation = Reservation::findOrFail($validated['reservation_id']);
+
+        // Security check: Ensure email matches the reservation
+        if ($reservation->email !== $validated['email']) {
+             abort(403, 'Email mismatch.');
+        }
+
         // Calculate Total Amount
         $total = $campaign->base_fee 
                + ($validated['companion_adult_count'] * $campaign->companion_adult_fee)
                + ($validated['companion_child_count'] * $campaign->companion_child_fee)
                + ($validated['additional_parking_count'] * $campaign->additional_parking_fee);
 
-        DB::transaction(function () use ($campaign, $validated, $total) {
-            $reservation = Reservation::updateOrCreate(
-                [
-                    'campaign_id' => $campaign->id,
-                    'email' => $validated['email']
-                ],
-                [
-                    'status' => 'temporary', // Set to temporary/pending as per flow
-                    'name' => $validated['name'],
-                    'name_kana' => $validated['name_kana'],
-                    'tel' => $validated['tel'],
-                    'zip_code' => $validated['zip_code'],
-                    'address' => $validated['address'],
-                    'car_model' => $validated['car_model'],
-                    'car_year' => $validated['car_year'],
-                    'car_registration_no' => $validated['car_registration_no'],
-                    'companion_adult_count' => $validated['companion_adult_count'],
-                    'companion_child_count' => $validated['companion_child_count'],
-                    'additional_parking_count' => $validated['additional_parking_count'],
-                    'transfer_date' => $validated['transfer_date'],
-                    'total_amount' => $total,
-                    'survey_data' => $validated['survey_data'] ?? [],
-                    'email_verified_at' => now(), // They clicked the signed link, so it's verified
-                ]
-            );
+        DB::transaction(function () use ($campaign, $reservation, $validated, $total) {
+            $reservation->update([
+                'status' => 'temporary', // Set to temporary/pending as per flow
+                'name' => $validated['name'],
+                'name_kana' => $validated['name_kana'],
+                'tel' => $validated['tel'],
+                'zip_code' => $validated['zip_code'],
+                'address' => $validated['address'],
+                'car_model' => $validated['car_model'],
+                'car_year' => $validated['car_year'],
+                'car_registration_no' => $validated['car_registration_no'],
+                'companion_adult_count' => $validated['companion_adult_count'],
+                'companion_child_count' => $validated['companion_child_count'],
+                'additional_parking_count' => $validated['additional_parking_count'],
+                'transfer_date' => $validated['transfer_date'],
+                'total_amount' => $total,
+                'survey_data' => $validated['survey_data'] ?? [],
+                'email_verified_at' => now(), // They clicked the signed link, so it's verified
+                'registered_at' => now(), // Official Registration Date
+            ]);
 
             Mail::to($reservation->email)->send(new RegistrationConfirmationEmail($reservation, $campaign));
         });
