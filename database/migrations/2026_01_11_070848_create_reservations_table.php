@@ -15,29 +15,29 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('campaign_id');
             $table->string('email');
+            $table->string('status'); // temporary, paid
+            
+            // Basic Info
             $table->string('name');
             $table->string('name_kana');
-            $table->tinyInteger('gender'); // 1:男, 2:女
-            $table->date('birth_date');
+            $table->string('tel');
             $table->string('zip_code');
             $table->string('address');
-            $table->string('tel');
-            $table->string('mtb_experience');
-            $table->string('club_name')->nullable();
-            $table->string('club_base');
-            $table->string('club_role');
             $table->string('car_model');
             $table->string('car_year');
-            $table->string('car_color');
-            $table->string('car_color_other')->nullable();
             $table->string('car_registration_no');
+            
+            // Registration Details
             $table->integer('companion_adult_count');
             $table->integer('companion_child_count');
             $table->integer('additional_parking_count');
-            $table->date('transfer_date');
-            $table->date('application_date');
             $table->integer('total_amount');
-            $table->string('status');
+            $table->date('transfer_date');
+            
+            // Dynamic Survey Data
+            $table->json('survey_data')->nullable();
+            
+            // Timestamps
             $table->dateTime('email_verified_at')->nullable();
             $table->timestamps();
 

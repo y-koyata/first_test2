@@ -1,0 +1,26 @@
+
+   INFO  Running migrations.  
+
+  2026_01_11_070848_create_reservations_table  3.12ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'reservations' already exists (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: test, SQL: create table `reservations` (`id` bigint unsigned not null auto_increment primary key, `campaign_id` int unsigned not null, `email` varchar(255) not null, `name` varchar(255) not null, `name_kana` varchar(255) not null, `gender` tinyint not null, `birth_date` date not null, `zip_code` varchar(255) not null, `address` varchar(255) not null, `tel` varchar(255) not null, `mtb_experience` varchar(255) not null, `club_name` varchar(255) null, `club_base` varchar(255) not null, `club_role` varchar(255) not null, `car_model` varchar(255) not null, `car_year` varchar(255) not null, `car_color` varchar(255) not null, `car_color_other` varchar(255) null, `car_registration_no` varchar(255) not null, `companion_adult_count` int not null, `companion_child_count` int not null, `additional_parking_count` int not null, `transfer_date` date not null, `application_date` date not null, `total_amount` int not null, `status` varchar(255) not null, `email_verified_at` datetime null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci')
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:831
+    827笆・            $exceptionType = $this->isUniqueConstraintError($e)
+    828笆・                ? UniqueConstraintViolationException::class
+    829笆・                : QueryException::class;
+    830笆・
+  筐・831笆・            throw new $exceptionType(
+    832笆・                $this->getNameWithReadWriteType(),
+    833笆・                $query,
+    834笆・                $this->prepareBindings($bindings),
+    835笆・                $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:577
+      PDOException::("SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'reservations' already exists")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:577
+      PDOStatement::execute()
+

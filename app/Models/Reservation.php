@@ -12,36 +12,32 @@ class Reservation extends Model
     protected $fillable = [
         'campaign_id',
         'email',
+        'status',
         'name',
         'name_kana',
-        'gender',
-        'birth_date',
+        'tel',
         'zip_code',
         'address',
-        'tel',
-        'mtb_experience',
-        'club_name',
-        'club_base',
-        'club_role',
         'car_model',
         'car_year',
-        'car_color',
-        'car_color_other',
         'car_registration_no',
         'companion_adult_count',
         'companion_child_count',
         'additional_parking_count',
-        'transfer_date',
-        'application_date',
         'total_amount',
-        'status',
+        'transfer_date',
+        'survey_data',
         'email_verified_at',
     ];
 
     protected $casts = [
-        'birth_date' => 'date',
         'transfer_date' => 'date',
-        'application_date' => 'date',
         'email_verified_at' => 'datetime',
+        'survey_data' => 'array',
     ];
+
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
+    }
 }
