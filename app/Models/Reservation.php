@@ -28,11 +28,13 @@ class Reservation extends Model
         'transfer_date',
         'survey_data',
         'email_verified_at',
+        'registered_at',
     ];
 
     protected $casts = [
         'transfer_date' => 'date',
         'email_verified_at' => 'datetime',
+        'registered_at' => 'datetime',
         'survey_data' => 'array',
     ];
 

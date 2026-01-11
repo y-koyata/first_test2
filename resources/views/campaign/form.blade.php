@@ -98,6 +98,7 @@
             @csrf
             <!-- Hidden email passed from authenticated session/link -->
             <input type="hidden" name="email" value="{{ $email }}">
+            <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
 
             <!-- Section 1: Precautions -->
             <div class="card">
