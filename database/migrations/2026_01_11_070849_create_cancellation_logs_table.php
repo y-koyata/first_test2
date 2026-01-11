@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('cancellation_logs', function (Blueprint $table) {
             $table->id();
-            $table->integer('campaign_id')->comment('キャンペーンID');
-            $table->string('email')->comment('削除されたメールアドレス');
-            $table->timestamp('canceled_at')->useCurrent()->comment('削除実行日時');
+            $table->unsignedInteger('campaign_id');
+            $table->string('email');
+            $table->dateTime('canceled_at');
+            $table->timestamps();
         });
     }
 
