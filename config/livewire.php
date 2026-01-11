@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'asset_url' => env('APP_URL', 'http://localhost/first_test2/public'),
+    'asset_url' => null,
 
     /*
     |---------------------------------------------------------------------------
