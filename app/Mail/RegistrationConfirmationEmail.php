@@ -35,7 +35,6 @@ class RegistrationConfirmationEmail extends Mailable
     {
         return new Envelope(
             subject: '【' . $this->campaign->name . '】参加登録完了のお知らせ',
-            bcc: ['info@meetthebeat.bambina.jp'],
         );
     }
 

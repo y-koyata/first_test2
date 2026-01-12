@@ -122,12 +122,6 @@ class CampaignResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('イベント名')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('slug')
-                    ->label('スラッグ')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('ステータス')
                     ->badge()
@@ -154,9 +148,9 @@ class CampaignResource extends Resource
                         'success' => '受付中',
                         'danger' => '終了',
                     ]),
-                Tables\Columns\TextColumn::make('reservations_count')
-                    ->counts('reservations')
-                    ->label('申し込み人数'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('イベント名')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('event_date')
                     ->label('開催日時')
                     ->dateTime()
@@ -164,6 +158,9 @@ class CampaignResource extends Resource
                 Tables\Columns\TextColumn::make('application_period')
                     ->label('受付期間')
                     ->getStateUsing(fn (Campaign $record) => $record->application_start_at->format('m/d H:i') . ' ~ ' . $record->application_end_at->format('m/d H:i')),
+                Tables\Columns\TextColumn::make('reservations_count')
+                    ->counts('reservations')
+                    ->label('申し込み人数'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

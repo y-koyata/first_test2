@@ -26,8 +26,45 @@ php artisan key:generate
 # データベースのマイグレーション（必要な場合）
 php artisan migrate
 ```
+## 2. 必須PHP拡張機能の設定（php.ini）
 
-## 2. 基本的なページの作成
+本プロジェクト（Laravel 12 + Filament 3）を正常に動作させるためには、PHPの構成設定ファイル（`php.ini`）において、以下の拡張機能を有効にする必要があります。特に画像処理やExcel出力、マルチバイト文字の取り扱いにおいて必須となリます。
+
+### 1. 修正対象のファイル
+- **XAMPPを使用している場合**: XAMPP Control Panel を開き、Apache の「Config」ボタンから **PHP (php.ini)** を選択して開きます。
+- **手動インストールの場合**: PHPのインストールディレクトリ内にある `php.ini` を直接編集します。
+
+### 2. 有効化する拡張機能のリクエスト
+以下の行を探し、行の先頭にあるセミコロン（`;`）を削除して、コメントアウトを解除（有効化）してください。
+
+```ini
+; 以下の行の先頭の「;」を削除します
+extension=bcmath      ; 数値計算用
+extension=curl        ; 外部APIとの通信用
+extension=fileinfo    ; ファイルのMIMEタイプ判定用
+extension=gd          ; 画像処理・Excel出力（PHPSpreadsheet）に必須
+extension=intl        ; 数値・日付の国際化用（Filamentで推奨）
+extension=mbstring    ; 日本語（マルチバイト文字）の取り扱いに必須
+extension=openssl     ; セキュアな通信（HTTPS等）に必須
+extension=pdo_mysql   ; MySQLデータベース接続に必須
+extension=zip         ; ZIP圧縮・展開、Excel出力に必須
+```
+
+### 3. 反映手順
+1. `php.ini` を保存して閉じます。
+2. **Webサーバー（Apache等）を必ず再起動**してください。XAMPPの場合は Apache の「Stop」ボタンを押した後、再度「Start」ボタンを押します。
+3. ターミナルで以下のコマンドを実行し、設定が反映されたか確認できます。
+   ```bash
+   php -m | findstr -i "gd mbstring pdo_mysql"
+   ```
+
+### 4. 注意点
+これらの拡張機能が有効になっていないと、以下のような問題が発生します。
+- `composer install` 実行時に `ext-gd` や `ext-zip` が不足しているというエラーで停止する。
+- データベースマイグレーション時に `mb_split` が見つからないなどのエラーが出る。
+- Excel出力機能実行時に画像処理ライブラリが存在しないというエラーが出る。
+
+## 3. 基本的なページの作成
 
 「Hello World」と表示するだけのシンプルなページを作成します。
 
@@ -62,7 +99,7 @@ Route::get('/hello', function () {
 });
 ```
 
-## 3. Apacheの設定
+## 4. Apacheの設定
 
 ### 3.1 .htaccessによる設定（推奨）
 
@@ -116,7 +153,7 @@ chmod -R 775 bootstrap/cache
 # sudo chown -R $USER:www-data bootstrap/cache
 ```
 
-## 4. 確認
+## 5. 確認
 
 開発用サーバーを起動して確認する場合：
 
