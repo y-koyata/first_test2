@@ -51,7 +51,6 @@ class CampaignController extends Controller
             $reservation = Reservation::create([
                 'campaign_id' => $campaign->id,
                 'email' => $request->email,
-                'status' => 'provisional',
                 'registered_at' => null,
             ]);
         }
@@ -125,7 +124,6 @@ class CampaignController extends Controller
 
         DB::transaction(function () use ($campaign, $reservation, $validated, $total) {
             $reservation->update([
-                'status' => 'temporary', // Set to temporary/pending as per flow
                 'name' => $validated['name'],
                 'name_kana' => $validated['name_kana'],
                 'tel' => $validated['tel'],
