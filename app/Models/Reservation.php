@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +13,6 @@ class Reservation extends Model
     protected $fillable = [
         'campaign_id',
         'email',
-        'status',
         'name',
         'name_kana',
         'tel',
@@ -41,5 +41,12 @@ class Reservation extends Model
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->registered_at ? '本登録' : '仮登録',
+        );
     }
 }
