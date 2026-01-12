@@ -21,7 +21,6 @@ class CampaignController extends Controller
             ->where('application_end_at', '>=', now())
             ->firstOrFail();
         
-        // Check functionality only, layout comes later
         return view('campaign.index', compact('campaign'));
     }
 
