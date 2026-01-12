@@ -61,9 +61,13 @@
             <!-- Event Overview Section -->
             <div class="grid md:grid-cols-2 gap-8 mb-12">
                 <!-- Image Column -->
-                <div class="md:h-full">
-                    <div class="rounded-2xl overflow-hidden shadow-lg bg-slate-200 aspect-[3/4] md:aspect-auto md:h-full">
-                        <img src="https://placehold.co/800x600/64748b/ffffff?text=Event+Image" alt="Event Image" class="w-full h-full object-cover object-left">
+                <div>
+                    <div class="rounded-2xl overflow-hidden shadow-lg aspect-[4/3] bg-slate-200">
+                        @if($campaign->image_path)
+                            <img src="{{ asset('storage/' . $campaign->image_path) }}" alt="{{ $campaign->name }}" class="w-full h-full object-cover">
+                        @else
+                            <img src="https://placehold.co/800x600/64748b/ffffff?text=Event+Image" alt="Event Image" class="w-full h-full object-cover">
+                        @endif
                     </div>
                 </div>
 

@@ -9,6 +9,7 @@ class Campaign extends Model
     protected $fillable = [
         'name',
         'slug',
+        'image_path',
         'base_fee',
         'companion_adult_fee',
         'companion_child_fee',
