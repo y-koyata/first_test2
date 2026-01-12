@@ -1,50 +1,98 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>リンクの有効期限切れ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>リンクの有効期限切れ | エラー</title>
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #475569;
+            --error: #ef4444;
+        }
+
         body {
-            font-family: 'Figtree', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
             margin: 0;
-            background-color: #f3f4f6;
-            color: #374151;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 3rem 2rem;
             text-align: center;
-            background: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            max-width: 90%;
-            width: 400px;
         }
-        h1 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            color: #ef4444;
-        }
-        p {
+
+        .icon {
+            font-size: 4rem;
+            color: var(--secondary);
             margin-bottom: 1.5rem;
+            display: block;
         }
-        a {
-            color: #3b82f6;
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .message {
+            color: var(--text-sub);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
             text-decoration: none;
         }
-        a:hover {
-            text-decoration: underline;
+
+        .btn:hover {
+            background-color: var(--primary-dark);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>無効なリンク</h1>
-        <p>リンクの有効期限が切れているか、無効なリンクです。<br>最初からやり直してください。</p>
+        <div class="card">
+            <span class="icon">⚠️</span>
+            <h1 class="title">リンクが無効、または期限切れです</h1>
+            <p class="message">
+                アクセスされたURLは、有効期限が切れているか、無効になっています。<br>
+                お手数ですが、再度最初から手続きをお願いいたします。
+            </p>
+            <a href="/" class="btn">トップページへ戻る</a>
+        </div>
     </div>
 </body>
 </html>
