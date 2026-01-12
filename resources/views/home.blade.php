@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Welcome</title>
+        <title>エラー</title>
         <style>
             body {
                 font-family: 'Figtree', sans-serif;
@@ -16,6 +16,6 @@
         </style>
     </head>
     <body>
-        <p>アクセスできるけどアクセスしてもこちらからお申込みいただけるページはない</p>
+        <p>こちらのページからお申込みいただけません</p>
     </body>
 </html>
