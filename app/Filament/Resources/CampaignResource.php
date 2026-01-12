@@ -47,6 +47,10 @@ class CampaignResource extends Resource
                                 'closed' => '受付終了',
                             ])
                             ->required(),
+                        Forms\Components\TextInput::make('template_file')
+                            ->label('テンプレートファイル')
+                            ->placeholder('campaign.index')
+                            ->helperText('例: campaign.events.special_event (resources/views/campaign/events/special_event.blade.php の場合)'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('開催日時・受付期間')
@@ -60,6 +64,14 @@ class CampaignResource extends Resource
                         Forms\Components\DateTimePicker::make('application_end_at')
                             ->label('申し込み終了日時')
                             ->required(),
+                        Forms\Components\DatePicker::make('document_request_deadline')
+                            ->label('資料請求締切日'),
+                        Forms\Components\DatePicker::make('postal_application_deadline')
+                            ->label('郵送申し込み締切日'),
+                        Forms\Components\DatePicker::make('payment_deadline')
+                            ->label('入金締切日'),
+                        Forms\Components\DatePicker::make('confirmation_delivery_date')
+                            ->label('受理票発送期限（到着目安）'),
                     ])->columns(3),
 
                 Forms\Components\Section::make('料金設定')

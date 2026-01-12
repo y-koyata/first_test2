@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'official_site_url' => env('OFFICIAL_SITE_URL', 'https://meetthebeat.net'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

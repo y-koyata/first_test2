@@ -20,13 +20,25 @@ class CampaignController extends Controller
             ->where('application_start_at', '<=', now())
             ->where('application_end_at', '>=', now())
             ->firstOrFail();
+
+        $view = $campaign->template_file ?: 'campaign.index';
         
+        if (view()->exists($view)) {
+             return view($view, compact('campaign'));
+        }
+
         return view('campaign.index', compact('campaign'));
     }
 
     public function preview($slug)
     {
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
+
+        $view = $campaign->template_file ?: 'campaign.index';
+
+        if (view()->exists($view)) {
+             return view($view, compact('campaign'));
+        }
 
         return view('campaign.index', compact('campaign'));
     }
@@ -35,7 +47,6 @@ class CampaignController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            // 'g-recaptcha-response' => 'required|captcha', // Enable when keys are ready
         ]);
 
         $campaign = Campaign::where('slug', $slug)->firstOrFail();
@@ -106,7 +117,6 @@ class CampaignController extends Controller
             'additional_parking_count' => 'required|integer|min:0',
             'transfer_date' => 'required|date',
             'survey_data' => 'nullable|array',
-            // 'g-recaptcha-response' => 'required|captcha',
         ]);
         
         $reservation = Reservation::findOrFail($validated['reservation_id']);

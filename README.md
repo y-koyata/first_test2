@@ -163,3 +163,41 @@ php artisan serve
 
 ブラウザで `http://localhost:8000/hello` にアクセスしてください。
 「Hello World!」というページが表示されれば成功です。
+
+## 6. イベントページの作成方法
+
+イベントごとに独自のデザイン（Bladeテンプレート）を適用したい場合の手順です。
+
+### 6.1 テンプレートファイルの作成
+`resources/views/campaign/events/` ディレクトリ配下に、新しいBladeファイルを作成します。
+例：`special_event_2026.blade.php`
+
+```html
+<!-- resources/views/campaign/events/special_event_2026.blade.php -->
+<!-- 標準のレイアウトを継承する場合 -->
+@extends('layouts.app')
+
+@section('content')
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold">{{ $campaign->name }}</h1>
+        <div class="mt-4">
+            <!-- 独自のコンテンツ -->
+            <p>このイベントは特別仕様のデザインです。</p>
+            <p>開催日: {{ $campaign->event_date->format('Y年m月d日 H:i') }}</p>
+        </div>
+
+        <!-- 申し込みフォームへのリンクなど -->
+    </div>
+@endsection
+```
+※ `$campaign` 変数が自動的に渡されるため、イベント情報を表示に使用できます。
+
+### 6.2 管理画面での指定
+1. 管理画面の「イベント管理」＞「イベント」編集画面を開きます。
+2. 「基本情報」セクションにある「テンプレートファイル」項目に入力します。
+3. 作成したファイルのパスを、Laravelのビュー記法（ドット区切り）で指定します。
+   - ファイルが `resources/views/campaign/events/special_event_2026.blade.php` の場合
+   - 入力値: `campaign.events.special_event_2026`
+4. 保存します。
+
+指定したファイルが存在しない場合は、自動的に標準のテンプレート（`campaign.index`）が使用されます。
