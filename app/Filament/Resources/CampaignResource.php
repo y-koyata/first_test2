@@ -3,16 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CampaignResource\Pages;
-use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
 use Filament\Forms;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Pages\Page;
 
 class CampaignResource extends Resource
 {
@@ -174,7 +171,7 @@ class CampaignResource extends Resource
                 Tables\Actions\Action::make('view_applications')
                     ->label('申し込み情報')
                     ->icon('heroicon-o-users')
-                    ->url(fn (Campaign $record): string => CampaignResource::getUrl('edit', ['record' => $record])),
+                    ->url(fn (Campaign $record): string => CampaignResource::getUrl('reservations', ['record' => $record])),
                 Tables\Actions\Action::make('view_event')
                     ->label('イベントページ')
                     ->icon('heroicon-o-arrow-top-right-on-square')
@@ -196,7 +193,7 @@ class CampaignResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ReservationsRelationManager::class,
+            // RelationManagers\ReservationsRelationManager::class,
         ];
     }
 
@@ -206,6 +203,15 @@ class CampaignResource extends Resource
             'index' => Pages\ListCampaigns::route('/'),
             'create' => Pages\CreateCampaign::route('/create'),
             'edit' => Pages\EditCampaign::route('/{record}/edit'),
+            'reservations' => Pages\ManageReservations::route('/{record}/reservations'),
         ];
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\EditCampaign::class,
+            Pages\ManageReservations::class,
+        ]);
     }
 }

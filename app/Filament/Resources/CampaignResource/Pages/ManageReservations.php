@@ -1,22 +1,30 @@
 <?php
 
-namespace App\Filament\Resources\CampaignResource\RelationManagers;
+namespace App\Filament\Resources\CampaignResource\Pages;
 
+use App\Filament\Resources\CampaignResource;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Exports\ReservationsExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Filament\Notifications\Notification;
 
-class ReservationsRelationManager extends RelationManager
+class ManageReservations extends ManageRelatedRecords
 {
+    protected static string $resource = CampaignResource::class;
+
     protected static string $relationship = 'reservations';
 
     protected static ?string $title = '申し込み一覧';
-    protected static ?string $modelLabel = '申し込み';
+
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function getNavigationLabel(): string
+    {
+        return '申し込み情報';
+    }
 
     public function form(Form $form): Form
     {
@@ -28,7 +36,6 @@ class ReservationsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required(),
-                // Add more fields if editing is required
             ]);
     }
 
@@ -67,7 +74,7 @@ class ReservationsRelationManager extends RelationManager
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function () {
                         return Excel::download(
-                            new ReservationsExport($this->getOwnerRecord()),
+                            new ReservationsExport($this->getRecord()),
                             'reservations-' . now()->format('Y-m-d') . '.csv',
                             \Maatwebsite\Excel\Excel::CSV
                         );
@@ -77,7 +84,7 @@ class ReservationsRelationManager extends RelationManager
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function () {
                         return Excel::download(
-                            new ReservationsExport($this->getOwnerRecord()),
+                            new ReservationsExport($this->getRecord()),
                             'reservations-' . now()->format('Y-m-d') . '.xlsx',
                             \Maatwebsite\Excel\Excel::XLSX
                         );
