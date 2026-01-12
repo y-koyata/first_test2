@@ -16,6 +16,10 @@ class Campaign extends Model
         'event_date',
         'application_start_at',
         'application_end_at',
+        'document_request_deadline',
+        'postal_application_deadline',
+        'payment_deadline',
+        'confirmation_delivery_date',
         'survey_definition',
         'status',
     ];
@@ -24,6 +28,10 @@ class Campaign extends Model
         'event_date' => 'datetime',
         'application_start_at' => 'datetime',
         'application_end_at' => 'datetime',
+        'document_request_deadline' => 'date',
+        'postal_application_deadline' => 'date',
+        'payment_deadline' => 'date',
+        'confirmation_delivery_date' => 'date',
         'survey_definition' => 'array',
     ];
 
