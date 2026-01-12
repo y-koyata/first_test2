@@ -15,9 +15,20 @@ class CampaignController extends Controller
 {
     public function index($slug)
     {
-        $campaign = Campaign::where('slug', $slug)->firstOrFail();
+        $campaign = Campaign::where('slug', $slug)
+            ->where('status', 'open')
+            ->where('application_start_at', '<=', now())
+            ->where('application_end_at', '>=', now())
+            ->firstOrFail();
         
         // Check functionality only, layout comes later
+        return view('campaign.index', compact('campaign'));
+    }
+
+    public function preview($slug)
+    {
+        $campaign = Campaign::where('slug', $slug)->firstOrFail();
+
         return view('campaign.index', compact('campaign'));
     }
 

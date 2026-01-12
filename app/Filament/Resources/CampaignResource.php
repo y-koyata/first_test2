@@ -183,6 +183,11 @@ class CampaignResource extends Resource
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->url(fn (Campaign $record): string => route('campaign.index', ['slug' => $record->slug]))
                     ->openUrlInNewTab(),
+                Tables\Actions\Action::make('preview_event')
+                    ->label('プレビュー')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Campaign $record): string => route('campaign.preview', ['slug' => $record->slug]))
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

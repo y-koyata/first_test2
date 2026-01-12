@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::prefix('event/{slug}')->name('campaign.')->group(function () {
     Route::get('/', [CampaignController::class, 'index'])->name('index');
+    Route::get('/preview', [CampaignController::class, 'preview'])->name('preview')->middleware('auth');
     Route::post('/verify', [CampaignController::class, 'verify'])->name('verify');
     
     // Signed route for the main registration form
