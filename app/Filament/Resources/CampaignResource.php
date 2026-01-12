@@ -6,6 +6,7 @@ use App\Filament\Resources\CampaignResource\Pages;
 use App\Filament\Resources\CampaignResource\RelationManagers;
 use App\Models\Campaign;
 use Filament\Forms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -130,11 +131,32 @@ class CampaignResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('ステータス')
                     ->badge()
+                    ->getStateUsing(function (Campaign $record): string {
+                        if ($record->status === 'draft') {
+                            return '下書き';
+                        }
+                        if ($record->status === 'closed') {
+                            return '終了';
+                        }
+                        // status is open
+                        $now = now();
+                        if ($now < $record->application_start_at || $now > $record->application_end_at) {
+                             if ($now > $record->application_end_at) {
+                                 return '終了';
+                             }
+                             return '非公開（申し込み期間外）';
+                        }
+                        return '受付中';
+                    })
                     ->colors([
-                        'gray' => 'draft',
-                        'success' => 'open',
-                        'danger' => 'closed',
+                        'gray' => '下書き',
+                        'warning' => '非公開（申し込み期間外）',
+                        'success' => '受付中',
+                        'danger' => '終了',
                     ]),
+                Tables\Columns\TextColumn::make('reservations_count')
+                    ->counts('reservations')
+                    ->label('申し込み人数'),
                 Tables\Columns\TextColumn::make('event_date')
                     ->label('開催日時')
                     ->dateTime()
@@ -152,10 +174,19 @@ class CampaignResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_applications')
+                    ->label('申し込み情報')
+                    ->icon('heroicon-o-users')
+                    ->url(fn (Campaign $record): string => CampaignResource::getUrl('edit', ['record' => $record])),
                 Tables\Actions\Action::make('view_event')
                     ->label('イベントページ')
                     ->icon('heroicon-o-arrow-top-right-on-square')
                     ->url(fn (Campaign $record): string => route('campaign.index', ['slug' => $record->slug]))
+                    ->openUrlInNewTab(),
+                Tables\Actions\Action::make('preview_event')
+                    ->label('プレビュー')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Campaign $record): string => route('campaign.preview', ['slug' => $record->slug]))
                     ->openUrlInNewTab(),
             ])
             ->bulkActions([
@@ -168,7 +199,7 @@ class CampaignResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ReservationsRelationManager::class,
         ];
     }
 
