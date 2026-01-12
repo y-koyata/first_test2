@@ -203,8 +203,8 @@
                                 （施設利用は別料金、コレクションホールは無料）
                             </p>
                         </div>          
-                        <div class="text-right text-xs md:text-sm italic font-bold mt-6">
-                            ※都合により個々のイベント内容の変更、または中止となる場合がございます。了承ください。
+                        <div class="text-right text-slate-600 text-xs md:text-sm italic font-bold mt-6">
+                            ※都合によりイベント内容は、変更・中止となる可能性があります。ご了承ください。
                         </div>
                     </div>
 

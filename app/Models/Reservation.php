@@ -20,6 +20,7 @@ class Reservation extends Model
         'address',
         'car_model',
         'car_year',
+        'car_color',
         'car_registration_no',
         'companion_adult_count',
         'companion_child_count',
