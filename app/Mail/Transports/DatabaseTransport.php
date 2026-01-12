@@ -19,22 +19,9 @@ class DatabaseTransport extends AbstractTransport
 
     protected function doSend(SentMessage $message): void
     {
-        $email = MessageConverter::toEmail($message->getOriginalMessage());
-
-        $headers = [];
-        foreach ($email->getHeaders()->all() as $header) {
-            $headers[$header->getName()] = $header->getBodyAsString();
-        }
-
-        MailLog::create([
-            'from' => $this->formatAddress($email->getFrom()),
-            'to' => $this->formatAddress($email->getTo()),
-            'cc' => $this->formatAddress($email->getCc()),
-            'bcc' => $this->formatAddress($email->getBcc()),
-            'subject' => $email->getSubject(),
-            'body' => $email->getHtmlBody() ?? $email->getTextBody(),
-            'headers' => $headers,
-        ]);
+        // The logging is now handled by the LogSentMail listener listening to MessageSent event.
+        // This method simply acts as a "sink" that allows the mail process to complete successfully,
+        // which then triggers the MessageSent event.
     }
 
     private function formatAddress(array $addresses): string
