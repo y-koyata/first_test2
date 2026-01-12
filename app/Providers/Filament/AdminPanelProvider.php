@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarWidth('14rem')
             ->renderHook(
                 'panels::head.end',
-                fn (): string => '<style>.fi-page-sub-navigation-sidebar-ctn { width: 14rem !important; }</style>'
+                fn (): string => '<style>.fi-page-sub-navigation-sidebar-ctn { width: 14rem !important; padding-inline: 0.75rem !important; }</style>'
             )
             ->colors([
                 'primary' => Color::Amber,

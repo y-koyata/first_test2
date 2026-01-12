@@ -14,10 +14,6 @@
         <header class="text-center mb-16">
             <div class="text-red-600 font-bold tracking-widest text-sm mb-2">EVENTS</div>
             <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6">{{ $campaign->name }}</h1>
-            <p class="text-slate-600 leading-relaxed max-w-2xl mx-auto">
-                年に一度、全国のオーナーが一堂に会する最大の祭典。<br>
-                美しくカスタマイズされたビートたちが、ツインリンクもてぎを埋め尽くす。
-            </p>
         </header>
 
         @if(session('status') === 'sent')
@@ -51,45 +47,58 @@
                         イベント概要
                     </h2>
 
-                    <div class="space-y-6 mb-8 border-l-2 border-slate-100 pl-4 ml-0.5">
+                    <div class="space-y-4 mb-8">
                         <div>
-                            <div class="text-sm font-bold text-slate-900 mb-1">開催日</div>
-                            <div class="text-lg text-slate-600">{{ $campaign->event_date->format('Y.m.d') }}</div>
+                            <div class="text-lg font-bold text-slate-900 mb-1">開催日</div>
+                            <div class="text-lg text-slate-600 pl-4 border-l-2 border-red-600 ml-4">{{ $campaign->event_date->format('Y.m.d') }}</div>
                         </div>
 
                         <div>
-                            <div class="text-sm font-bold text-slate-900 mb-1">開催場所</div>
-                            <div class="text-lg text-slate-600">
+                            <div class="text-lg font-bold text-slate-900 mb-1">開催場所</div>
+                            <div class="text-lg text-slate-600 pl-4 border-l-2 border-red-600 ml-4">
                                 ツインリンクもてぎ<br>
-                                <span class="text-sm">栃木県芳賀郡茂木町桧山120-1</span>
+                                （栃木県芳賀郡茂木町桧山120-1）
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-sm font-bold text-slate-900 mb-1">申込期間</div>
-                            <div class="text-lg text-slate-600">
+                            <div class="text-lg font-bold text-slate-900 mb-1">申込期間</div>
+                            <div class="text-lg text-slate-600 pl-4 border-l-2 border-red-600 ml-4">
                                 {{ $campaign->application_start_at->format('Y/n/j') }} 〜
                                 {{ $campaign->application_end_at->format('Y/n/j') }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-sm font-bold text-slate-900 mb-1">募集台数</div>
-                            <div class="text-lg text-slate-600">500台（先着順）</div>
-                        </div>
-
-                        <div>
-                            <div class="text-sm font-bold text-slate-900 mb-1">参加費</div>
-                            <div class="text-lg text-slate-600">
-                                運転手：{{ number_format($campaign->base_fee) }}円 / 同乗者：{{ number_format($campaign->companion_adult_fee ?? 2500) }}円
+                            <div class="text-lg font-bold text-slate-900 mb-1">参加費</div>
+                            <div class="text-lg text-slate-600 pl-4 border-l-2 border-red-600 ml-4">
+                                <table class="w-full max-w-md mt-1 mb-2">
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr>
+                                            <td class="py-1.5 pr-4 text-sm md:text-base">オーナー参加者1名＋ビート1台</td>
+                                            <td class="py-1.5 text-right font-bold whitespace-nowrap">{{ number_format($campaign->base_fee) }}円</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 pr-4 text-sm md:text-base">ご同伴者1名（中学生以上）</td>
+                                            <td class="py-1.5 text-right font-bold whitespace-nowrap">{{ number_format($campaign->companion_adult_fee) }}円</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 pr-4 text-sm md:text-base">ご同伴者1名（～小学生）</td>
+                                            <td class="py-1.5 text-right font-bold whitespace-nowrap">{{ number_format($campaign->companion_child_fee) }}円</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-1.5 pr-4 text-sm md:text-base">駐車場利用料1台
+                                                   <span class="text-sm text-red-600 block leading-relaxed">
+                                    ※参加者がビートで参加される場合は不要です。ご同伴者が参加者と別の車両で来場される場合は必要となります。</span>
+                                            </td>
+                                            <td class="py-1.5 text-right font-bold whitespace-nowrap">{{ number_format($campaign->additional_parking_fee) }}円</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                             
                             </div>
                         </div>
                     </div>
-
-                    <a href="#entry-steps" class="block w-full bg-red-600 hover:bg-red-700 text-white font-bold text-center py-4 rounded-lg shadow-md transition duration-200">
-                        エントリーする
-                    </a>
-                </div>
             </div>
 
             <!-- Steps Section -->
@@ -97,13 +106,10 @@
 
                 <!-- Step 1 -->
                 <div class="relative pl-6 md:pl-0">
-                    <!-- Step Label -->
-                    <div class="absolute -left-2 md:-left-4 top-0 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm">
-                        STEP 1
-                    </div>
+
 
                     <div class="flex items-center mb-4 md:pl-12">
-                        <h2 class="text-xl font-bold text-slate-900">注意事項の確認</h2>
+                        <h2 class="text-xl font-bold text-slate-900">注意事項</h2>
                     </div>
 
                     <div class="relative bg-red-50 border border-red-100 rounded-xl p-6 md:p-8 overflow-hidden">
@@ -148,27 +154,20 @@
                             </ul>
 
                             <div class="text-right text-red-500 text-xs md:text-sm italic font-bold mt-6">
-                                ※上記内容に同意いただける方のみ、STEP 2 へお進みください。
+                                ※上記内容に同意いただける方のみ、お申込みください。
                             </div>
                         </div>
                     </div>
 
-                    <!-- Down Arrow Icon -->
-                    <div class="flex justify-center my-6">
-                        <svg class="w-8 h-8 text-red-200 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </div>
+
                 </div>
 
                 <!-- Step 2 -->
                 <div class="relative pl-6 md:pl-0 pb-20">
-                    <div class="absolute -left-2 md:-left-4 top-0 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm">
-                        STEP 2
-                    </div>
+
 
                     <div class="flex items-center mb-8 md:pl-12">
-                        <h2 class="text-xl font-bold text-slate-900">参加登録</h2>
+                        <h2 class="text-xl font-bold text-slate-900">こちらから参加申し込み</h2>
                     </div>
 
                     <div class="relative bg-white rounded-xl p-6 md:p-10 shadow-sm border border-slate-100">
