@@ -27,6 +27,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->sidebarWidth('14rem')
+            ->renderHook(
+                'panels::head.end',
+                fn (): string => '<style>.fi-page-sub-navigation-sidebar-ctn { width: 14rem !important; }</style>'
+            )
             ->colors([
                 'primary' => Color::Amber,
             ])
