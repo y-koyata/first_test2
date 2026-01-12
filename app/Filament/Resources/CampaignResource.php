@@ -34,6 +34,11 @@ class CampaignResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
+                        Forms\Components\FileUpload::make('image_path')
+                            ->label('メイン画像')
+                            ->image()
+                            ->directory('campaign_images')
+                            ->columnSpanFull(),
                         Forms\Components\Select::make('status')
                             ->label('ステータス')
                             ->options([

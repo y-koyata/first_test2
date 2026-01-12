@@ -36,7 +36,11 @@
                 <!-- Image Column -->
                 <div>
                     <div class="rounded-2xl overflow-hidden shadow-lg aspect-[4/3] bg-slate-200">
-                        <img src="https://placehold.co/800x600/64748b/ffffff?text=Event+Image" alt="Event Image" class="w-full h-full object-cover">
+                        @if($campaign->image_path)
+                            <img src="{{ asset('storage/' . $campaign->image_path) }}" alt="{{ $campaign->name }}" class="w-full h-full object-cover">
+                        @else
+                            <img src="https://placehold.co/800x600/64748b/ffffff?text=Event+Image" alt="Event Image" class="w-full h-full object-cover">
+                        @endif
                     </div>
                 </div>
 
