@@ -22,6 +22,7 @@ class Campaign extends Model
         'confirmation_delivery_date',
         'survey_definition',
         'status',
+        'template_file',
     ];
 
     protected $casts = [

@@ -42,6 +42,10 @@ class CampaignResource extends Resource
                                 'closed' => '受付終了',
                             ])
                             ->required(),
+                        Forms\Components\TextInput::make('template_file')
+                            ->label('テンプレートファイル')
+                            ->placeholder('campaign.index')
+                            ->helperText('例: campaign.events.special_event (resources/views/campaign/events/special_event.blade.php の場合)'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('開催日時・受付期間')
